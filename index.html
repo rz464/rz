@@ -1,1107 +1,275 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RZ 荣荣的服务器 - 我的世界跨版本互通</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: "Microsoft YaHei", "Segoe UI", sans-serif;
-        }
-
-        body {
-            background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)),
-                        url("https://ts1.tc.mm.bing.net/th/id/R-C.c48fecf6dfd8a207ecffb566bd91404b?rik=Y32dGk5k4F1PmA&riu=http%3a%2f%2fimg.netbian.com%2ffile%2f2021%2f0608%2fa5f735becc3790ec88fc8a4036ca65fa.jpg&ehk=EuY3yI4sCjDhXednY9R%2balEA2h8Ja1xgtG%2fRz%2fdI93k%3d&risl=&pid=ImgRaw&r=0");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-            color: #fff;
-            min-height: 100vh;
-            padding: 20px 0;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 0 15px;
-        }
-
-        .header {
-            text-align: center;
-            padding: 40px 0 30px;
-        }
-
-        .header h1 {
-            font-size: 42px;
-            font-weight: 700;
-            text-shadow: 0 0 15px rgba(46, 204, 113, 0.5);
-            margin-bottom: 8px;
-            color: #fff;
-        }
-
-        .header p {
-            font-size: 17px;
-            opacity: 0.9;
-        }
-
-        .core {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            padding: 35px;
-            margin-bottom: 30px;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .ip-box {
-            text-align: center;
-            margin-bottom: 35px;
-        }
-
-        .ip-box h2 {
-            font-size: 22px;
-            margin-bottom: 18px;
-            color: #fff;
-        }
-
-        .ip-content {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .ip-text {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 10px;
-            padding: 12px 20px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #fff;
-            letter-spacing: 1px;
-        }
-
-        .copy-btn {
-            background: #2ecc71;
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            padding: 12px 22px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .copy-btn:hover {
-            background: #27ae60;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
-        }
-
-        .status-box {
-            text-align: center;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .status-box h2 {
-            font-size: 22px;
-            margin-bottom: 20px;
-            color: #fff;
-        }
-
-        .status-header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .server-icon-container {
-            width: 55px;
-            height: 55px;
-            border-radius: 12px;
-            overflow: hidden;
-            background: rgba(46, 204, 113, 0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid rgba(46, 204, 113, 0.3);
-        }
-
-        .server-icon {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .status-title {
-            font-size: 24px;
-            font-weight: bold;
-            color: #fff;
-        }
-
-        .motd {
-            font-size: 15px;
-            color: rgba(255, 255, 255, 0.85);
-            margin-bottom: 12px;
-        }
-
-        .player-count {
-            font-size: 36px;
-            font-weight: 700;
-            color: #2ecc71;
-            margin: 10px 0;
-        }
-
-        .status-desc {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .feature {
-            margin-bottom: 20px;
-        }
-
-        .feature h2 {
-            font-size: 22px;
-            text-align: center;
-            margin-bottom: 20px;
-            color: #fff;
-        }
-
-        .feature-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 18px;
-        }
-
-        .feature-item {
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 15px;
-            padding: 22px;
-            text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            transition: 0.3s;
-        }
-
-        .feature-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .feature-item h3 {
-            font-size: 17px;
-            margin-bottom: 10px;
-            color: #fff;
-        }
-
-        .feature-item p {
-            font-size: 14px;
-            color: rgba(255, 255, 255, 0.8);
-            line-height: 1.5;
-        }
-
-        .qun-box {
-            text-align: center;
-            margin-top: 30px;
-        }
-
-        .qun-box h2 {
-            font-size: 22px;
-            margin-bottom: 18px;
-            color: #fff;
-        }
-
-        .qun-btn {
-            background: #2ecc71;
-            color: #fff;
-            border: none;
-            border-radius: 12px;
-            padding: 14px 30px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .qun-btn:hover {
-            background: #27ae60;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
-        }
-
-        .footer {
-            text-align: center;
-            padding: 25px 0;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 13px;
-        }
-
-        .toast {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #2ecc71;
-            color: #fff;
-            padding: 12px 20px;
-            border-radius: 10px;
-            display: none;
-            z-index: 999;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        /* 音乐悬浮球样式 - 新设计 */
-        .music-float-ball {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 1001;
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 70px;
-            height: 70px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
-            transition: all 0.4s ease;
-            animation: float 3s ease-in-out infinite;
-            overflow: hidden;
-        }
-
-        .music-float-ball:hover {
-            transform: scale(1.15);
-            box-shadow: 0 8px 25px rgba(46, 204, 113, 0.6);
-        }
-
-        .music-float-ball.expanded {
-            background: linear-gradient(135deg, #e74c3c, #c0392b);
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(231, 76, 60, 0.6);
-        }
-
-        .music-float-ball.expanded:hover {
-            transform: scale(1.2);
-            box-shadow: 0 10px 30px rgba(231, 76, 60, 0.8);
-        }
-
-        .music-icon {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 2px;
-            transition: all 0.3s;
-        }
-
-        .music-text {
-            font-size: 12px;
-            font-weight: 600;
-            opacity: 0.9;
-            letter-spacing: 0.5px;
-            transition: all 0.3s;
-        }
-
-        .music-float-ball.expanded .music-icon {
-            font-size: 22px;
-            margin-bottom: 4px;
-        }
-
-        .music-float-ball.expanded .music-text {
-            font-size: 11px;
-            opacity: 1;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.4); }
-            70% { box-shadow: 0 0 0 15px rgba(46, 204, 113, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
-        }
-
-        /* 音乐播放器样式 */
-        .music-player {
-            position: fixed;
-            bottom: 100px;
-            right: 20px;
-            z-index: 1000;
-            width: 320px;
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            border-radius: 20px;
-            padding: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
-            transform: translateY(120%) scale(0.9);
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-            pointer-events: none;
-        }
-
-        .music-player.expanded {
-            transform: translateY(0) scale(1);
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .music-player-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .music-player-icon {
-            background: linear-gradient(135deg, #2ecc71, #27ae60);
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .music-player-title {
-            flex: 1;
-        }
-
-        .music-player-title h3 {
-            font-size: 16px;
-            font-weight: 700;
-            color: #fff;
-            margin-bottom: 3px;
-        }
-
-        .music-player-title p {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .music-controls {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 25px;
-            margin: 25px 0;
-        }
-
-        .music-control-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            font-size: 20px;
-            color: #fff;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s;
-        }
-
-        .music-control-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
-        }
-
-        .music-play-btn {
-            background: #2ecc71;
-            width: 60px;
-            height: 60px;
-            font-size: 24px;
-        }
-
-        .music-play-btn:hover {
-            background: #27ae60;
-            transform: scale(1.15);
-        }
-
-        .music-play-btn.playing {
-            background: #e74c3c;
-        }
-
-        .music-play-btn.playing:hover {
-            background: #c0392b;
-        }
-
-        /* 进度条样式 */
-        .progress-container {
-            width: 100%;
-            margin: 20px 0;
-        }
-
-        .progress-info {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-        }
-
-        .progress-time {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
-            cursor: pointer;
-            position: relative;
-            overflow: visible;
-        }
-
-        .progress {
-            height: 100%;
-            background: linear-gradient(90deg, #2ecc71, #27ae60);
-            border-radius: 3px;
-            width: 0%;
-            transition: width 0.1s linear;
-        }
-
-        .progress-handle {
-            position: absolute;
-            top: 50%;
-            transform: translate(-50%, -50%);
-            width: 18px;
-            height: 18px;
-            background: #fff;
-            border-radius: 50%;
-            cursor: pointer;
-            opacity: 1;
-            border: 3px solid #2ecc71;
-            box-shadow: 0 0 10px rgba(46, 204, 113, 0.8);
-            z-index: 10;
-        }
-
-        .progress-handle.dragging {
-            transform: translate(-50%, -50%) scale(1.3);
-            border-color: #27ae60;
-        }
-
-        /* 音量控制 */
-        .volume-control {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.15);
-        }
-
-        .volume-icon {
-            color: #2ecc71;
-            font-size: 18px;
-            width: 24px;
-            text-align: center;
-        }
-
-        .volume-slider {
-            flex: 1;
-            height: 6px;
-            -webkit-appearance: none;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
-            outline: none;
-        }
-
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #2ecc71;
-            cursor: pointer;
-            border: 3px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-        }
-
-        .volume-slider::-moz-range-thumb {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            background: #2ecc71;
-            cursor: pointer;
-            border: 3px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-        }
-
-        /* 响应式设计 */
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 32px;
-            }
-            .core {
-                padding: 25px 20px;
-            }
-            .player-count {
-                font-size: 28px;
-            }
-            
-            /* 手机端悬浮球 */
-            .music-float-ball {
-                width: 60px;
-                height: 60px;
-                bottom: 15px;
-                right: 15px;
-            }
-            
-            .music-icon {
-                font-size: 22px;
-            }
-            
-            .music-text {
-                font-size: 11px;
-            }
-            
-            /* 手机端播放器 */
-            .music-player {
-                width: calc(100% - 30px);
-                right: 15px;
-                left: 15px;
-                bottom: 90px;
-                padding: 18px;
-            }
-            
-            .music-controls {
-                gap: 20px;
-            }
-            
-            .music-control-btn {
-                width: 45px;
-                height: 45px;
-                font-size: 18px;
-            }
-            
-            .music-play-btn {
-                width: 55px;
-                height: 55px;
-                font-size: 22px;
-            }
-        }
-
-        @media (min-width: 769px) {
-            /* 电脑端优化 */
-            .music-player {
-                max-width: 350px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .music-float-ball {
-                width: 55px;
-                height: 55px;
-                bottom: 12px;
-                right: 12px;
-            }
-            
-            .music-icon {
-                font-size: 20px;
-            }
-            
-            .music-text {
-                font-size: 10px;
-            }
-            
-            .music-player {
-                bottom: 85px;
-                padding: 16px;
-            }
-        }
-
-        /* 小屏手机优化 */
-        @media (max-width: 360px) {
-            .music-float-ball {
-                width: 50px;
-                height: 50px;
-            }
-            
-            .music-icon {
-                font-size: 18px;
-            }
-            
-            .music-text {
-                font-size: 9px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RZ 荣荣的服务器 - 我的世界跨版本互通</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei","Segoe UI",sans-serif}
+body{background:linear-gradient(rgba(0,0,0,0.4),rgba(0,0,0,0.4)),url("https://ts1.tc.mm.bing.net/th/id/R-C.c48fecf6dfd8a207ecffb566bd91404b?rik=Y32dGk5k4F1PmA&riu=http%3a%2f%2fimg.netbian.com%2ffile%2f2021%2f0608%2fa5f735becc3790ec88fc8a4036ca65fa.jpg&ehk=EuY3yI4sCjDhXednY9R%2balEA2h8Ja1xgtG%2fRz%2fdI93k%3d&risl=&pid=ImgRaw&r=0");background-size:cover;background-position:center;background-attachment:fixed;color:#fff;min-height:100vh;padding:20px 0}
+.container{max-width:1000px;margin:0 auto;padding:0 15px}
+.header{text-align:center;padding:40px 0 30px}
+.header h1{font-size:42px;font-weight:700;text-shadow:0 0 15px rgba(46,204,113,0.5);margin-bottom:8px;color:#fff}
+.header p{font-size:17px;opacity:.9}
+.core{background:rgba(255,255,255,0.1);backdrop-filter:blur(15px);border:1px solid rgba(255,255,255,0.2);border-radius:20px;padding:35px;margin-bottom:30px;box-shadow:0 8px 30px rgba(0,0,0,0.2)}
+.ip-box{text-align:center;margin-bottom:35px}
+.ip-box h2{font-size:22px;margin-bottom:18px;color:#fff}
+.ip-content{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.ip-text{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.2);border-radius:10px;padding:12px 20px;font-size:20px;font-weight:bold;color:#fff;letter-spacing:1px}
+.copy-btn{background:#2ecc71;color:#fff;border:none;border-radius:10px;padding:12px 22px;cursor:pointer;font-size:15px;font-weight:600;transition:all .3s}
+.copy-btn:hover{background:#27ae60;transform:translateY(-2px);box-shadow:0 5px 15px rgba(46,204,113,0.3)}
+.status-box{text-align:center;background:rgba(255,255,255,0.08);border-radius:15px;padding:25px;margin-bottom:30px;border:1px solid rgba(255,255,255,0.15)}
+.status-box h2{font-size:22px;margin-bottom:20px;color:#fff}
+.status-header{display:flex;align-items:center;justify-content:center;gap:15px;margin-bottom:15px}
+.server-icon-container{width:55px;height:55px;border-radius:12px;overflow:hidden;background:rgba(46,204,113,0.2);display:flex;align-items:center;justify-content:center;border:2px solid rgba(46,204,113,0.3)}
+.server-icon{width:100%;height:100%;object-fit:cover}
+.status-title{font-size:24px;font-weight:bold;color:#fff}
+.motd{font-size:15px;color:rgba(255,255,255,0.85);margin-bottom:12px}
+.player-count{font-size:36px;font-weight:700;color:#2ecc71;margin:10px 0}
+.status-desc{font-size:14px;color:rgba(255,255,255,0.7)}
+.feature{margin-bottom:20px}
+.feature h2{font-size:22px;text-align:center;margin-bottom:20px;color:#fff}
+.feature-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px}
+.feature-item{background:rgba(255,255,255,0.08);border-radius:15px;padding:22px;text-align:center;border:1px solid rgba(255,255,255,0.15);transition:.3s}
+.feature-item:hover{transform:translateY(-3px);box-shadow:0 5px 15px rgba(0,0,0,0.2)}
+.feature-item h3{font-size:17px;margin-bottom:10px;color:#fff}
+.feature-item p{font-size:14px;color:rgba(255,255,255,0.8);line-height:1.5}
+.qun-box{text-align:center;margin-top:30px}
+.qun-box h2{font-size:22px;margin-bottom:18px;color:#fff}
+.qun-btn{background:#2ecc71;color:#fff;border:none;border-radius:12px;padding:14px 30px;cursor:pointer;font-size:16px;font-weight:600;transition:all .3s}
+.qun-btn:hover{background:#27ae60;transform:translateY(-2px);box-shadow:0 5px 15px rgba(46,204,113,0.3)}
+.footer{text-align:center;padding:25px 0;color:rgba(255,255,255,0.6);font-size:13px}
+.toast{position:fixed;top:20px;right:20px;background:#2ecc71;color:#fff;padding:12px 20px;border-radius:10px;display:none;z-index:999;box-shadow:0 5px 15px rgba(0,0,0,0.2)}
+.music-float-ball{position:fixed;bottom:20px;right:20px;z-index:1001;background:linear-gradient(135deg,#2ecc71,#27ae60);color:white;border:none;border-radius:50%;width:70px;height:70px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 6px 20px rgba(46,204,113,0.4);transition:all .4s ease;animation:float 3s ease-in-out infinite;overflow:hidden}
+.music-float-ball:hover{transform:scale(1.15);box-shadow:0 8px 25px rgba(46,204,113,0.6)}
+.music-float-ball.expanded{background:linear-gradient(135deg,#e74c3c,#c0392b);transform:scale(1.1);box-shadow:0 8px 25px rgba(231,76,60,0.6)}
+.music-float-ball.expanded:hover{transform:scale(1.2);box-shadow:0 10px 30px rgba(231,76,60,0.8)}
+.music-icon{font-size:24px;font-weight:bold;margin-bottom:2px;transition:all .3s}
+.music-text{font-size:12px;font-weight:600;opacity:.9;letter-spacing:.5px;transition:all .3s}
+.music-float-ball.expanded .music-icon{font-size:22px;margin-bottom:4px}
+.music-float-ball.expanded .music-text{font-size:11px;opacity:1}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.music-player{position:fixed;bottom:100px;right:20px;z-index:1000;width:320px;background:rgba(255,255,255,0.12);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:20px;box-shadow:0 15px 35px rgba(0,0,0,0.4);transform:translateY(120%) scale(0.9);opacity:0;transition:all .5s cubic-bezier(0.34,1.56,0.64,1);pointer-events:none}
+.music-player.expanded{transform:translateY(0) scale(1);opacity:1;pointer-events:all}
+.music-player-header{display:flex;align-items:center;gap:12px;margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid rgba(255,255,255,0.15)}
+.music-player-icon{background:linear-gradient(135deg,#2ecc71,#27ae60);width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:bold}
+.music-player-title{flex:1}
+.music-player-title h3{font-size:16px;font-weight:700;color:#fff;margin-bottom:3px}
+.music-player-title p{font-size:12px;color:rgba(255,255,255,0.7)}
+.music-controls{display:flex;align-items:center;justify-content:center;gap:25px;margin:25px 0}
+.music-control-btn{background:rgba(255,255,255,0.1);border:none;border-radius:50%;width:50px;height:50px;font-size:20px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .3s}
+.music-control-btn:hover{background:rgba(255,255,255,0.2);transform:scale(1.1)}
+.music-play-btn{background:#2ecc71;width:60px;height:60px;font-size:24px}
+.music-play-btn:hover{background:#27ae60;transform:scale(1.15)}
+.music-play-btn.playing{background:#e74c3c}
+.music-play-btn.playing:hover{background:#c0392b}
+.progress-container{width:100%;margin:20px 0}
+.progress-info{display:flex;justify-content:space-between;margin-bottom:8px}
+.progress-time{font-size:12px;color:rgba(255,255,255,0.7)}
+.progress-bar{width:100%;height:6px;background:rgba(255,255,255,0.2);border-radius:3px;cursor:pointer;position:relative;overflow:visible}
+.progress{height:100%;background:linear-gradient(90deg,#2ecc71,#27ae60);border-radius:3px;width:0%;transition:width .1s linear}
+.progress-handle{position:absolute;top:50%;transform:translate(-50%,-50%);width:18px;height:18px;background:#fff;border-radius:50%;cursor:pointer;opacity:1;border:3px solid #2ecc71;box-shadow:0 0 10px rgba(46,204,113,0.8);z-index:10}
+.progress-handle.dragging{transform:translate(-50%,-50%) scale(1.3);border-color:#27ae60}
+.volume-control{display:flex;align-items:center;gap:12px;margin-top:20px;padding-top:20px;border-top:1px solid rgba(255,255,255,0.15)}
+.volume-icon{color:#2ecc71;font-size:18px;width:24px;text-align:center}
+.volume-slider{flex:1;height:6px;-webkit-appearance:none;background:rgba(255,255,255,0.2);border-radius:3px;outline:none}
+.volume-slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#2ecc71;cursor:pointer;border:3px solid rgba(255,255,255,0.9);box-shadow:0 0 5px rgba(0,0,0,0.3)}
+.volume-slider::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#2ecc71;cursor:pointer;border:3px solid rgba(255,255,255,0.9);box-shadow:0 0 5px rgba(0,0,0,0.3)}
+@media(max-width:768px){.header h1{font-size:32px}.core{padding:25px 20px}.player-count{font-size:28px}.music-float-ball{width:60px;height:60px;bottom:15px;right:15px}.music-icon{font-size:22px}.music-text{font-size:11px}.music-player{width:calc(100% - 30px);right:15px;left:15px;bottom:90px;padding:18px}.music-controls{gap:20px}.music-control-btn{width:45px;height:45px;font-size:18px}.music-play-btn{width:55px;height:55px;font-size:22px}}
+</style>
 </head>
 <body>
 
-<!-- 音乐悬浮球 -->
 <button class="music-float-ball" id="musicFloatBall">
-    <div class="music-icon">♪</div>
-    <div class="music-text">音乐</div>
+<div class="music-icon">♪</div>
+<div class="music-text">音乐</div>
 </button>
 
-<!-- 音乐播放器 -->
 <div class="music-player" id="musicPlayer">
-    <div class="music-player-header">
-        <div class="music-player-icon">♪</div>
-        <div class="music-player-title">
-            <h3 id="musicTitle">RZ 服务器背景音乐</h3>
-            <p id="musicTime">00:00 / 00:00</p>
-        </div>
-    </div>
-    
-    <div class="music-controls">
-        <button class="music-control-btn" id="prevBtn">⏮</button>
-        <button class="music-control-btn music-play-btn" id="musicPlayBtn">▶</button>
-        <button class="music-control-btn" id="nextBtn">⏭</button>
-    </div>
-    
-    <div class="progress-container">
-        <div class="progress-info">
-            <span class="progress-time" id="currentTime">00:00</span>
-            <span class="progress-time" id="totalTime">00:00</span>
-        </div>
-        <div class="progress-bar" id="progressBar">
-            <div class="progress" id="progress"></div>
-            <div class="progress-handle" id="progressHandle"></div>
-        </div>
-    </div>
-    
-    <div class="volume-control">
-        <div class="volume-icon">🔊</div>
-        <input type="range" min="0" max="100" value="50" class="volume-slider" id="volumeSlider">
-    </div>
+<div class="music-player-header">
+<div class="music-player-icon">♪</div>
+<div class="music-player-title">
+<h3 id="musicTitle">RZ 服务器背景音乐</h3>
+<p id="musicTime">00:00 / 00:00</p>
+</div>
+</div>
+<div class="music-controls">
+<button class="music-control-btn" id="prevBtn">⏮</button>
+<button class="music-control-btn music-play-btn" id="musicPlayBtn">▶</button>
+<button class="music-control-btn" id="nextBtn">⏭</button>
+</div>
+<div class="progress-container">
+<div class="progress-info">
+<span class="progress-time" id="currentTime">00:00</span>
+<span class="progress-time" id="totalTime">00:00</span>
+</div>
+<div class="progress-bar" id="progressBar">
+<div class="progress" id="progress"></div>
+<div class="progress-handle" id="progressHandle"></div>
+</div>
+</div>
+<div class="volume-control">
+<div class="volume-icon">🔊</div>
+<input type="range" min="0" max="100" value="50" class="volume-slider" id="volumeSlider">
+</div>
 </div>
 
 <div class="container">
-    <div class="header">
-        <h1>RZ 荣荣的服务器</h1>
-        <p>Java 全版本兼容 | 稳定开服 | 纯粹公益服</p>
-    </div>
-
-    <div class="core">
-        <div class="ip-box">
-            <h2>服务器连接 IP</h2>
-            <div class="ip-content">
-                <div class="ip-text" id="ip">rz.owo.vin</div>
-                <button class="copy-btn" onclick="copyIp()">一键复制</button>
-            </div>
-        </div>
-
-        <!-- 主服状态面板 -->
-        <div class="status-box">
-            <h2>服务器实时状态</h2>
-            <div class="status-header">
-                <div class="server-icon-container">
-                    <img id="server-icon" class="server-icon" alt="服务器图标" 
-                         src="https://api.mcsrvstat.us/icon/rz.owo.vin"
-                         onerror="this.src='https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.20/block/grass_block_top.png'">
-                </div>
-                <div class="status-title">RZ 主服</div>
-            </div>
-            <div class="motd" id="motd">加载服务器简介...</div>
-            <div class="player-count" id="online">加载中...</div>
-            <div class="status-desc" id="status-desc">实时监控中，30秒自动刷新</div>
-        </div>
-
-        <div class="feature">
-            <h2>服务器状态</h2>
-            <div class="feature-list">
-                <div class="feature-item">
-                    <h3>Java 跨版本</h3>
-                    <p>支持多版本进入，无需单独适配</p>
-                </div>
-                <div class="feature-item">
-                    <h3>子服状态</h3>
-                    <div style="text-align:center; margin-top:10px;">
-                        <img id="sub-icon" 
-                             src="https://api.mcsrvstat.us/icon/rzmc.owo.vin"
-                             onerror="this.src='https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.20/block/diamond_block.png'"
-                             style="width:40px;height:40px;border-radius:8px;object-fit:cover;border:2px solid rgba(46,204,113,0.3);">
-                        <div id="sub-online" style="font-size:16px;font-weight:bold;color:#2ecc71;margin:6px 0 4px;">加载中...</div>
-                        <div id="sub-motd" style="font-size:12px;color:rgba(255,255,255,0.7);">加载子服状态...</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="qun-box">
-            <h2>加入官方交流群</h2>
-            <button class="qun-btn" onclick="copyQun()">点击复制 QQ 群 | 929934674</button>
-        </div>
-    </div>
-
-    <div class="footer"></div>
+<div class="header">
+<h1>RZ 荣荣的服务器</h1>
+<p>Java 全版本兼容 | 稳定开服 | 纯粹公益服</p>
+</div>
+<div class="core">
+<div class="ip-box">
+<h2>服务器连接 IP</h2>
+<div class="ip-content">
+<div class="ip-text" id="ip">rz.owo.vin</div>
+<button class="copy-btn" onclick="copyIp()">一键复制</button>
+</div>
 </div>
 
-<div class="toast" id="toast">IP 复制成功！</div>
+<div class="status-box">
+<h2>服务器实时状态</h2>
+<div class="status-header">
+<div class="server-icon-container">
+<img id="server-icon" class="server-icon" alt="服务器图标" src="https://api.mcsrvstat.us/icon/rz.owo.vin" onerror="this.src='https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.20/block/grass_block_top.png'">
+</div>
+<div class="status-title">RZ 主服</div>
+</div>
+<div class="motd" id="motd">加载服务器简介...</div>
+<div class="player-count" id="online">加载中...</div>
+<div class="status-desc" id="status-desc">实时监控中，30秒自动刷新</div>
+</div>
 
-<!-- 音频元素 -->
+<div class="feature">
+<h2>服务器状态</h2>
+<div class="feature-list">
+<div class="feature-item">
+<h3>Java 跨版本</h3>
+<p>支持多版本进入，无需单独适配</p>
+</div>
+<div class="feature-item">
+<h3>子服状态</h3>
+<div style="text-align:center;margin-top:10px;">
+<img id="sub-icon" src="https://api.mcsrvstat.us/icon/rzmc.owo.vin" onerror="this.src='https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.20/block/diamond_block.png'" style="width:40px;height:40px;border-radius:8px;object-fit:cover;border:2px solid rgba(46,204,113,0.3);">
+<div id="sub-online" style="font-size:16px;font-weight:bold;color:#2ecc71;margin:6px 0 4px;">加载中...</div>
+<div id="sub-motd" style="font-size:12px;color:rgba(255,255,255,0.7);">加载子服状态...</div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="qun-box">
+<h2>加入官方交流群</h2>
+<button class="qun-btn" onclick="copyQun()">点击复制 QQ 群 | 929934674</button>
+</div>
+</div>
+<div class="footer"></div>
+</div>
+
+<div class="toast" id="toast">复制成功！</div>
 <audio id="bgMusic" loop preload="auto">
-    <source src="http://music.163.com/song/media/outer/url?id=1330348068.mp3" type="audio/mpeg">
-    您的浏览器不支持音频播放。
+<source src="http://music.163.com/song/media/outer/url?id=1330348068.mp3" type="audio/mpeg">
+您的浏览器不支持音频播放。
 
 
 <script>
-    // 音乐播放控制
-    const bgMusic = document.getElementById('bgMusic');
-    const musicFloatBall = document.getElementById('musicFloatBall');
-    const musicPlayer = document.getElementById('musicPlayer');
-    const musicPlayBtn = document.getElementById('musicPlayBtn');
-    const musicTitle = document.getElementById('musicTitle');
-    const musicTime = document.getElementById('musicTime');
-    const currentTimeEl = document.getElementById('currentTime');
-    const totalTimeEl = document.getElementById('totalTime');
-    const volumeSlider = document.getElementById('volumeSlider');
-    const progressBar = document.getElementById('progressBar');
-    const progress = document.getElementById('progress');
-    const progressHandle = document.getElementById('progressHandle');
-    
-    // 播放器展开状态
-    let isPlayerExpanded = false; // 默认收起
-    let isDragging = false;
-    
-    // 设置初始音量
-    bgMusic.volume = volumeSlider.value / 100;
-    
-    // 格式化时间 (秒 -> MM:SS)
-    function formatTime(seconds) {
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    }
-    
-    // 更新进度条和时间显示
-    function updateProgress() {
-        if (!isDragging && !isNaN(bgMusic.duration) && bgMusic.duration > 0) {
-            const currentTime = bgMusic.currentTime;
-            const duration = bgMusic.duration;
-            const progressPercent = (currentTime / duration) * 100;
-            
-            progress.style.width = `${progressPercent}%`;
-            progressHandle.style.left = `${progressPercent}%`;
-            
-            currentTimeEl.textContent = formatTime(currentTime);
-            totalTimeEl.textContent = formatTime(duration);
-            musicTime.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
-        }
-    }
-    
-    // 点击进度条跳转到指定位置
-    function seekToPosition(clientX) {
-        const rect = progressBar.getBoundingClientRect();
-        let clickPosition = (clientX - rect.left) / rect.width;
-        
-        // 限制在0-1之间
-        clickPosition = Math.max(0, Math.min(1, clickPosition));
-        
-        if (!isNaN(bgMusic.duration) && bgMusic.duration > 0) {
-            bgMusic.currentTime = clickPosition * bgMusic.duration;
-            
-            // 立即更新进度显示
-            const progressPercent = clickPosition * 100;
-            progress.style.width = `${progressPercent}%`;
-            progressHandle.style.left = `${progressPercent}%`;
-            
-            currentTimeEl.textContent = formatTime(bgMusic.currentTime);
-        }
-    }
-    
-    // 进度条点击事件
-    progressBar.addEventListener('click', function(e) {
-        seekToPosition(e.clientX);
-    });
-    
-    // 进度条鼠标按下事件 - 开始拖动
-    progressBar.addEventListener('mousedown', function(e) {
-        isDragging = true;
-        progressHandle.classList.add('dragging');
-        document.body.style.userSelect = 'none';
-        seekToPosition(e.clientX);
-    });
-    
-    // 进度条手柄鼠标按下事件
-    progressHandle.addEventListener('mousedown', function(e) {
-        isDragging = true;
-        progressHandle.classList.add('dragging');
-        document.body.style.userSelect = 'none';
-        e.stopPropagation();
-    });
-    
-    // 鼠标移动事件 - 处理拖动
-    document.addEventListener('mousemove', function(e) {
-        if (isDragging) {
-            seekToPosition(e.clientX);
-        }
-    });
-    
-    // 鼠标释放事件 - 结束拖动
-    document.addEventListener('mouseup', function() {
-        if (isDragging) {
-            isDragging = false;
-            progressHandle.classList.remove('dragging');
-            document.body.style.userSelect = '';
-        }
-    });
-    
-    // 触摸事件支持 (移动端)
-    progressBar.addEventListener('touchstart', function(e) {
-        isDragging = true;
-        progressHandle.classList.add('dragging');
-        const touch = e.touches[0];
-        seekToPosition(touch.clientX);
-        e.preventDefault();
-    });
-    
-    document.addEventListener('touchmove', function(e) {
-        if (isDragging) {
-            const touch = e.touches[0];
-            seekToPosition(touch.clientX);
-            e.preventDefault();
-        }
-    });
-    
-    document.addEventListener('touchend', function() {
-        if (isDragging) {
-            isDragging = false;
-            progressHandle.classList.remove('dragging');
-        }
-    });
-    
-    // 音量控制
-    volumeSlider.addEventListener('input', function() {
-        bgMusic.volume = this.value / 100;
-    });
-    
-    // 播放/暂停音乐按钮功能
-    musicPlayBtn.addEventListener('click', function() {
-        if (bgMusic.paused) {
-            bgMusic.play();
-            musicPlayBtn.classList.add('playing');
-            musicPlayBtn.innerHTML = '⏸';
-        } else {
-            bgMusic.pause();
-            musicPlayBtn.classList.remove('playing');
-            musicPlayBtn.innerHTML = '▶';
-        }
-    });
-    
-    // 上一首/下一首按钮 (暂时只有一首歌)
-    document.getElementById('prevBtn').addEventListener('click', function() {
-        bgMusic.currentTime = 0;
-        updateProgress();
-    });
-    
-    document.getElementById('nextBtn').addEventListener('click', function() {
-        bgMusic.currentTime = 0;
-        updateProgress();
-    });
-    
-    // 切换播放器显示/隐藏
-    musicFloatBall.addEventListener('click', function() {
-        isPlayerExpanded = !isPlayerExpanded;
-        
-        if (isPlayerExpanded) {
-            // 展开播放器
-            musicPlayer.classList.add('expanded');
-            musicFloatBall.classList.add('expanded');
-            musicFloatBall.querySelector('.music-icon').textContent = '▼';
-        } else {
-            // 收起播放器
-            musicPlayer.classList.remove('expanded');
-            musicFloatBall.classList.remove('expanded');
-            musicFloatBall.querySelector('.music-icon').textContent = '♪';
-        }
-    });
-    
-    // 点击播放器外部收起播放器
-    document.addEventListener('click', function(e) {
-        if (isPlayerExpanded && 
-            !musicPlayer.contains(e.target) && 
-            !musicFloatBall.contains(e.target)) {
-            isPlayerExpanded = false;
-            musicPlayer.classList.remove('expanded');
-            musicFloatBall.classList.remove('expanded');
-            musicFloatBall.querySelector('.music-icon').textContent = '♪';
-        }
-    });
-    
-    // 监听音乐事件
-    bgMusic.addEventListener('timeupdate', updateProgress);
-    
-    bgMusic.addEventListener('play', function() {
-        musicPlayBtn.classList.add('playing');
-        musicPlayBtn.innerHTML = '⏸';
-    });
-    
-    bgMusic.addEventListener('pause', function() {
-        musicPlayBtn.classList.remove('playing');
-        musicPlayBtn.innerHTML = '▶';
-    });
-    
-    bgMusic.addEventListener('ended', function() {
-        musicPlayBtn.classList.remove('playing');
-        musicPlayBtn.innerHTML = '▶';
-    });
-    
-    bgMusic.addEventListener('error', function(e) {
-        console.error('音乐播放错误:', e);
-        musicTitle.textContent = '音乐加载失败';
-        musicTime.textContent = '错误';
-        musicPlayBtn.disabled = true;
-        musicFloatBall.disabled = true;
-        musicFloatBall.style.background = '#95a5a6';
-        musicFloatBall.style.cursor = 'not-allowed';
-    });
-    
-    // 页面加载时自动播放音乐
-    document.addEventListener('DOMContentLoaded', function() {
-        // 显示加载状态
-        musicTitle.textContent = '加载音乐中...';
-        musicTime.textContent = '00:00 / 00:00';
-        
-        // 设置音频元数据加载后的回调
-        bgMusic.addEventListener('loadedmetadata', function() {
-            musicTitle.textContent = 'RZ 服务器背景音乐';
-            updateProgress();
-            
-            // 尝试自动播放
-            const playPromise = bgMusic.play();
-            
-            if (playPromise !== undefined) {
-                playPromise.then(() => {
-                    console.log('背景音乐自动播放成功');
-                }).catch(error => {
-                    console.log('自动播放被阻止，等待用户交互');
-                    musicPlayBtn.classList.remove('playing');
-                    musicPlayBtn.innerHTML = '▶';
-                    
-                    // 添加点击事件监听器，用户点击后播放
-                    document.body.addEventListener('click', function firstClick() {
-                        bgMusic.play().then(() => {
-                            console.log('用户交互后播放成功');
-                        }).catch(e => {
-                            console.error('播放失败:', e);
-                        });
-                        document.body.removeEventListener('click', firstClick);
-                    });
-                });
-            }
-        });
-        
-        // 加载音乐
-        bgMusic.load();
-    });
+// 万能复制函数
+function copyText(text, msg) {
+  const input = document.createElement('input');
+  input.style.position = 'fixed';
+  input.style.opacity = '0';
+  input.value = text;
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand('copy');
+  document.body.removeChild(input);
 
-    // IP复制功能
-    function copyIp() {
-        const ip = document.getElementById('ip').innerText;
-        navigator.clipboard.writeText(ip).then(() => {
-            const toast = document.getElementById('toast');
-            toast.textContent = "IP 复制成功！";
-            toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 2000);
-        });
-    }
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 2000);
+}
 
-    // QQ群复制功能
-    function copyQun() {
-        const qun = "929934674";
-        navigator.clipboard.writeText(qun).then(() => {
-            const toast = document.getElementById('toast');
-            toast.textContent = "QQ群号复制成功！";
-            toast.style.display = 'block';
-            setTimeout(() => toast.style.display = 'none', 2000);
-        });
-    }
+function copyIp() {
+  copyText("rz.owo.vin", "IP 复制成功！");
+}
+function copyQun() {
+  copyText("929934674", "QQ群号复制成功！");
+}
 
-    // 服务器状态监控
-    const MAIN_IP = "rz.owo.vin";
-    const SUB_IP  = "rzmc.owo.vin";
+// 下面全是音乐和服务器状态，不动
+const bgMusic = document.getElementById('bgMusic');
+const musicFloatBall = document.getElementById('musicFloatBall');
+const musicPlayer = document.getElementById('musicPlayer');
+const musicPlayBtn = document.getElementById('musicPlayBtn');
+let isPlayerExpanded = false;
+let isDragging = false;
 
-    const mainIcon = document.getElementById("server-icon");
-    const mainOnline = document.getElementById("online");
-    const mainMotd = document.getElementById("motd");
-    const mainDesc = document.getElementById("status-desc");
+bgMusic.volume = 0.5;
 
-    const subIcon = document.getElementById("sub-icon");
-    const subOnline = document.getElementById("sub-online");
-    const subMotd = document.getElementById("sub-motd");
+function formatTime(s) {
+  const m = Math.floor(s/60);
+  const sc = Math.floor(s%60);
+  return `${m.toString().padStart(2,'0')}:${sc.toString().padStart(2,'0')}`;
+}
 
-    async function loadMain() {
-        try {
-            const res = await fetch(`https://api.mcstatus.io/v2/status/java/${MAIN_IP}`);
-            const data = await res.json();
-            if (data.online) {
-                mainOnline.innerText = `${data.players.online} / ${data.players.max}`;
-                mainOnline.style.color = "#2ecc71";
-                mainMotd.innerText = data.motd?.clean || "欢迎来到RZ主服";
-                if (data.icon) {
-                    mainIcon.src = data.icon;
-                } else {
-                    mainIcon.src = "https://api.mcsrvstat.us/icon/rz.owo.vin";
-                }
-                mainDesc.innerText = "主服正常运行中";
-            } else {
-                mainOnline.innerText = "离线";
-                mainOnline.style.color = "#e74c3c";
-                mainMotd.innerText = "主服暂时离线";
-                mainIcon.src = "https://api.mcsrvstat.us/icon/rz.owo.vin";
-                mainDesc.innerText = "主服未开启";
-            }
-        } catch (e) {
-            mainOnline.innerText = "获取失败";
-            mainOnline.style.color = "#f39c12";
-        }
-    }
+function updateProgress() {
+  if(isDragging) return;
+  const d = bgMusic.duration;
+  if(!d) return;
+  const p = (bgMusic.currentTime/d)*100;
+  progress.style.width = p+'%';
+  progressHandle.style.left = p+'%';
+  currentTimeEl.textContent = formatTime(bgMusic.currentTime);
+  totalTimeEl.textContent = formatTime(d);
+}
 
-    async function loadSub() {
-        try {
-            const res = await fetch(`https://api.mcstatus.io/v2/status/java/${SUB_IP}`);
-            const data = await res.json();
-            if (data.online) {
-                subOnline.innerText = `${data.players.online} / ${data.players.max}`;
-                subOnline.style.color = "#2ecc71";
-                subMotd.innerText = data.motd?.clean || "子服运行中";
-                if (data.icon) {
-                    subIcon.src = data.icon;
-                } else {
-                    subIcon.src = "https://api.mcsrvstat.us/icon/rzmc.owo.vin";
-                }
-            } else {
-                subOnline.innerText = "离线";
-                subOnline.style.color = "#e74c3c";
-                subMotd.innerText = "子服未开启";
-                subIcon.src = "https://api.mcsrvstat.us/icon/rzmc.owo.vin";
-            }
-        } catch (e) {
-            subOnline.innerText = "获取失败";
-            subOnline.style.color = "#f39c12";
-        }
-    }
+progressBar.addEventListener('click', e => {
+  const r = progressBar.getBoundingClientRect();
+  const pos = (e.clientX - r.left)/r.width;
+  bgMusic.currentTime = pos * bgMusic.duration;
+});
 
-    // 页面加载时开始监控
-    loadMain();
-    loadSub();
-    setInterval(() => { loadMain(); loadSub(); }, 30000);
+progressBar.addEventListener('mousedown',()=>{isDragging=true;progressHandle.classList.add('dragging')});
+document.addEventListener('mouseup',()=>{isDragging=false;progressHandle.classList.remove('dragging')});
+document.addEventListener('mousemove',e=>{
+  if(!isDragging) return;
+  const r = progressBar.getBoundingClientRect();
+  const pos = (e.clientX - r.left)/r.width;
+  bgMusic.currentTime = Math.max(0, Math.min(1, pos)) * bgMusic.duration;
+});
+
+volumeSlider.addEventListener('input',()=>{bgMusic.volume=volumeSlider.value/100});
+
+musicPlayBtn.onclick=()=>{
+  if(bgMusic.paused){bgMusic.play();musicPlayBtn.innerHTML='⏸';musicPlayBtn.classList.add('playing')}
+  else{bgMusic.pause();musicPlayBtn.innerHTML='▶';musicPlayBtn.classList.remove('playing')}
+}
+
+musicFloatBall.onclick=()=>{
+  isPlayerExpanded=!isPlayerExpanded;
+  if(isPlayerExpanded){
+    musicPlayer.classList.add('expanded');
+    musicFloatBall.classList.add('expanded');
+    musicFloatBall.querySelector('.music-icon').textContent='▼';
+  }else{
+    musicPlayer.classList.remove('expanded');
+    musicFloatBall.classList.remove('expanded');
+    musicFloatBall.querySelector('.music-icon').textContent='♪';
+  }
+}
+
+bgMusic.addEventListener('timeupdate',updateProgress);
+
+// 服务器状态
+const MAIN_IP="rz.owo.vin",SUB_IP="rzmc.owo.vin";
+async function loadMain(){try{const r=await fetch(`https://api.mcstatus.io/v2/status/java/${MAIN_IP}`);const d=await r.json();
+if(d.online){online.innerText=d.players.online+'/'+d.players.max;motd.innerText=d.motd?.clean||"欢迎"}else{online.innerText="离线";online.style.color="#e74c3c";motd.innerText="离线"}}catch(e){online.innerText="失败"}}
+async function loadSub(){try{const r=await fetch(`https://api.mcstatus.io/v2/status/java/${SUB_IP}`);const d=await r.json();
+if(d.online){subOnline.innerText=d.players.online+'/'+d.players.max;subMotd.innerText=d.motd?.clean||"运行中"}else{subOnline.innerText="离线";subOnline.style.color="#e74c3c";subMotd.innerText="未开启"}}catch(e){subOnline.innerText="失败"}}
+loadMain();loadSub();setInterval(()=>{loadMain();loadSub()},30000);
 </script>
-
 </body>
 </html>
