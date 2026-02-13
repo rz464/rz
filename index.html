@@ -744,13 +744,11 @@
 
         <div class="qun-box">
             <h2>加入官方交流群</h2>
-            <a href="https://qm.qq.com/q/5V6Z7X8C9B" target="_blank">
-                <button class="qun-btn">点击加入 QQ 群 | 929934674</button>
-            </a>
+            <button class="qun-btn" onclick="copyQun()">点击复制 QQ 群 | 929934674</button>
         </div>
     </div>
 
-    <div class="footer">© 2026 RZ 荣荣的服务器 版权所有</div>
+    <div class="footer"></div>
 </div>
 
 <div class="toast" id="toast">IP 复制成功！</div>
@@ -1017,6 +1015,18 @@
         const ip = document.getElementById('ip').innerText;
         navigator.clipboard.writeText(ip).then(() => {
             const toast = document.getElementById('toast');
+            toast.textContent = "IP 复制成功！";
+            toast.style.display = 'block';
+            setTimeout(() => toast.style.display = 'none', 2000);
+        });
+    }
+
+    // QQ群复制功能
+    function copyQun() {
+        const qun = "929934674";
+        navigator.clipboard.writeText(qun).then(() => {
+            const toast = document.getElementById('toast');
+            toast.textContent = "QQ群号复制成功！";
             toast.style.display = 'block';
             setTimeout(() => toast.style.display = 'none', 2000);
         });
