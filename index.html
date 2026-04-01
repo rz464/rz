@@ -812,12 +812,12 @@
     <div class="core">
         <div class="ip-box">
             <h2>服务器连接 IP</h2>
-            <div class="ip-content"><div class="ip-text" id="ip">rz.owo.vin</div><button class="copy-btn" onclick="copyIp()">一键复制</button></div>
+            <div class="ip-content"><div class="ip-text" id="ip">rzmc.cc.cd</div><button class="copy-btn" onclick="copyIp()">一键复制</button></div>
         </div>
         <div class="status-box">
             <h2>服务器实时状态</h2>
             <div class="status-header">
-                <div class="server-icon-container"><img id="server-icon" class="server-icon" alt="服务器图标" src="https://api.mcsrvstat.us/icon/rz.owo.vin" onerror="this.src='https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.20/block/grass_block_top.png'"></div>
+                <div class="server-icon-container"><img id="server-icon" class="server-icon" alt="服务器图标" src="https://api.mcsrvstat.us/icon/rzmc.cc.cd" onerror="this.src='https://raw.githubusercontent.com/PrismarineJS/minecraft-assets/master/data/1.20/block/grass_block_top.png'"></div>
                 <div class="status-title">RZ 主服</div>
             </div>
             <div class="motd" id="motd">加载服务器简介...</div>
@@ -1165,9 +1165,9 @@
         loadHotSongs();
     });
 
-    const MAIN_IP="rz.owo.vin",SUB_IP="rzmc.owo.vin";
+    const MAIN_IP="rzmc.cc.cd",SUB_IP="rzmc.owo.vin";
     const mainIcon=document.getElementById("server-icon"),mainOnline=document.getElementById("online"),mainMotd=document.getElementById("motd"),mainDesc=document.getElementById("status-desc"),subIcon=document.getElementById("sub-icon"),subOnline=document.getElementById("sub-online"),subMotd=document.getElementById("sub-motd");
-    async function loadMain(){try{const r=await fetch(`https://api.mcstatus.io/v2/status/java/${MAIN_IP}`);const d=await r.json();if(d.online){mainOnline.innerText=`${d.players.online} / ${d.players.max}`;mainOnline.style.color="#2ecc71";mainMotd.innerText=d.motd?.clean||"欢迎来到RZ主服";mainIcon.src=d.icon||"https://api.mcsrvstat.us/icon/rz.owo.vin";mainDesc.innerText="主服正常运行中";}else{mainOnline.innerText="离线";mainOnline.style.color="#e74c3c";mainMotd.innerText="主服暂时离线";mainIcon.src="https://api.mcsrvstat.us/icon/rz.owo.vin";mainDesc.innerText="主服未开启";}}catch{mainOnline.innerText="获取失败";mainOnline.style.color="#f39c12";}}
+    async function loadMain(){try{const r=await fetch(`https://api.mcstatus.io/v2/status/java/${MAIN_IP}`);const d=await r.json();if(d.online){mainOnline.innerText=`${d.players.online} / ${d.players.max}`;mainOnline.style.color="#2ecc71";mainMotd.innerText=d.motd?.clean||"欢迎来到RZ主服";mainIcon.src=d.icon||"https://api.mcsrvstat.us/icon/rzmc.cc.cd";mainDesc.innerText="主服正常运行中";}else{mainOnline.innerText="离线";mainOnline.style.color="#e74c3c";mainMotd.innerText="主服暂时离线";mainIcon.src="https://api.mcsrvstat.us/icon/rzmc.cc.cd";mainDesc.innerText="主服未开启";}}catch{mainOnline.innerText="获取失败";mainOnline.style.color="#f39c12";}}
     async function loadSub(){try{const r=await fetch(`https://api.mcstatus.io/v2/status/java/${SUB_IP}`);const d=await r.json();if(d.online){subOnline.innerText=`${d.players.online} / ${d.players.max}`;subOnline.style.color="#2ecc71";subMotd.innerText=d.motd?.clean||"子服运行中";subIcon.src=d.icon||"https://api.mcsrvstat.us/icon/rzmc.owo.vin";}else{subOnline.innerText="离线";subOnline.style.color="#e74c3c";subMotd.innerText="子服未开启";subIcon.src="https://api.mcsrvstat.us/icon/rzmc.owo.vin";}}catch{subOnline.innerText="获取失败";subOnline.style.color="#f39c12";}}
     loadMain();loadSub();setInterval(()=>{loadMain();loadSub();},30000);
 </script>
